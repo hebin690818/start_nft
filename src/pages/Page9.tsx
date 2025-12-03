@@ -16,7 +16,7 @@ function Page9() {
 
   return (
     <div
-      className="relative min-h-screen bg-black text-white overflow-hidden cursor-pointer"
+      className="page-transition relative min-h-screen bg-black text-white overflow-hidden cursor-pointer"
       onClick={handleClick}
     >
       {/* Start 文字 - 3D 效果 (SVG 路径复制 + 平移 + 填充/描边分离) */}

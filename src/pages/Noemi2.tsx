@@ -19,7 +19,7 @@ function Noemi2() {
   useNoemiNavigation()
   
   return (
-    <div className="noemi2-wrapper bg-black">
+    <div className="page-transition noemi2-wrapper bg-black">
       <div className="content">
         <header className="header">
           <div className="enter-btn">personal information</div>

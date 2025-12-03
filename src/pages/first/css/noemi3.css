@@ -1,6 +1,8 @@
 .noemi3-wrapper {
     position: relative;
     width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
     padding: 16px 100px 16px 100px;
     box-sizing: border-box;
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 // 页面顺序数组（按照命名顺序）
@@ -22,49 +22,64 @@ const pageOrder = [
 export function useKeyboardNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
+  const previousPathRef = useRef<string>(location.pathname);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // 只处理左右箭头键
-      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-        let currentPath = location.pathname;
-        
-        // 将根路径 "/" 视为 "/page1"
-        if (currentPath === "/") {
-          currentPath = "/page1";
-        }
-        
-        const currentIndex = pageOrder.indexOf(currentPath);
+    // 只在页面路径改变时重置滚动位置
+    if (previousPathRef.current !== location.pathname) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      previousPathRef.current = location.pathname;
+    }
 
-        if (currentIndex === -1) {
-          // 如果当前路径不在页面列表中，不处理
-          return;
-        }
+    const navigateToPage = (direction: "up" | "down") => {
+      let currentPath = location.pathname;
+      
+      // 将根路径 "/" 视为 "/page1"
+      if (currentPath === "/") {
+        currentPath = "/page1";
+      }
+      
+      const currentIndex = pageOrder.indexOf(currentPath);
 
-        if (event.key === "ArrowLeft") {
-          // 左箭头：上一个页面
-          // 如果在第一个页面（page1），跳转到 Noemi3
-          if (currentIndex === 0) {
-            navigate("/noemi3");
-            return;
-          }
+      if (currentIndex === -1) {
+        // 如果当前路径不在页面列表中，不处理
+        return;
+      }
+
+      if (direction === "up") {
+        // 上箭头：上一个页面
+        // 如果在第一个页面（page1），跳转到 Noemi3
+        if (currentIndex === 0) {
+          navigate("/noemi3");
+        } else {
           const nextIndex = currentIndex - 1;
           const nextPath = pageOrder[nextIndex];
           navigate(nextPath);
-        } else if (event.key === "ArrowRight") {
-          // 右箭头：下一个页面
-          // 如果在 page13，跳转到 last
-          if (currentPath === "/page13") {
-            navigate("/last");
-            return;
-          }
+        }
+      } else if (direction === "down") {
+        // 下箭头：下一个页面
+        // 如果在 page13，跳转到 last
+        if (currentPath === "/page13") {
+          navigate("/last");
+        } else if (currentIndex === pageOrder.length - 1) {
           // 如果在最后一个页面（page14），不执行跳转
-          if (currentIndex === pageOrder.length - 1) {
-            return;
-          }
+          return;
+        } else {
           const nextIndex = currentIndex + 1;
           const nextPath = pageOrder[nextIndex];
           navigate(nextPath);
+        }
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // 只处理上下箭头键
+      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        event.preventDefault();
+        if (event.key === "ArrowUp") {
+          navigateToPage("up");
+        } else if (event.key === "ArrowDown") {
+          navigateToPage("down");
         }
       }
     };

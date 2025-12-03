@@ -1466,7 +1466,7 @@ function SlotMachine() {
   ];
 
   return (
-    <div className="slot-machine-page">
+    <div className="page-transition slot-machine-page">
       <div className="slot-machine-header">
         {/* <h1 className="main-title">🎰 老虎机抽奖系统</h1> */}
         <div className="case-selector">

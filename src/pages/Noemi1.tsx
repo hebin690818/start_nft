@@ -9,7 +9,7 @@ function Noemi1() {
   useNoemiNavigation();
 
   return (
-    <div className="noemi1-wrapper bg-black">
+    <div className="page-transition noemi1-wrapper bg-black">
       {/* 背景视频 */}
       <video autoPlay className="noemi1-bg-video" loop muted>
         <source src={bgVideo} type="video/mp4" />

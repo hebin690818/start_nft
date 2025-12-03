@@ -9,7 +9,7 @@ function Page1() {
   useKeyboardNavigation();
   
   return (
-    <div className="flex min-h-screen flex-col bg-linear-to-br from-[#020c06] via-[#031207] to-[#010402] text-white">
+    <div className="page-transition flex min-h-screen flex-col bg-linear-to-br from-[#020c06] via-[#031207] to-[#010402] text-white">
       <div className="flex flex-1 items-end justify-center px-4 sm:px-6 md:px-8">
         <div className="mx-auto flex flex-col items-center gap-8 sm:gap-10 md:gap-14 lg:flex-row lg:items-center lg:gap-38">
           <div className="relative w-full max-w-2xl overflow-hidden sm:overflow-visible xl:max-w-3xl">

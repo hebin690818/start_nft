@@ -8,7 +8,7 @@ function Page4() {
   useKeyboardNavigation();
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="page-transition relative min-h-screen bg-black text-white overflow-x-hidden">
       {/* 右上角视频动画 */}
       <div className="absolute top-2.5 right-9 z-10">
         <video

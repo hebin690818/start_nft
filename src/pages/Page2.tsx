@@ -123,7 +123,7 @@ function Page2() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#020c06] via-[#031207] to-[#010402] text-white flex items-center justify-center py-8">
+    <div className="page-transition min-h-screen bg-linear-to-br from-[#020c06] via-[#031207] to-[#010402] text-white flex items-center justify-center py-8">
       <div className="flex flex-col w-full max-w-7xl mx-auto px-6">
         {/* Top Section - Header and Navigation */}
         <div className="pb-8 shrink-0">

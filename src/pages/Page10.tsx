@@ -11,7 +11,7 @@ function Page10() {
   }, []);
   
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="page-transition min-h-screen bg-black flex items-center justify-center">
       <img
         src={page10}
         alt="Page 10"

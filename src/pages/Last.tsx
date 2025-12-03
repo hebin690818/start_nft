@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './last/last.css'
 import img from './last/images/img.png'
@@ -13,15 +13,18 @@ const images = [img, img1, img2, img3, img4, img5]
 function Last() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const navigate = useNavigate()
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        // 如果已经是最后一张，禁止右箭头
+    const navigateSlide = (direction: 'up' | 'down') => {
+      if (direction === 'down') {
+        // 向下：下一个幻灯片
+        // 如果已经是最后一张，禁止
         if (currentSlide < images.length - 1) {
           setCurrentSlide((prev) => prev + 1)
         }
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      } else if (direction === 'up') {
+        // 向上：上一个幻灯片
         // 如果是第一张，跳转到 page13
         if (currentSlide === 0) {
           navigate('/page13')
@@ -31,8 +34,53 @@ function Last() {
       }
     }
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        navigateSlide('down')
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        navigateSlide('up')
+      }
+    }
+
+    const handleWheel = (event: WheelEvent) => {
+      // 防止默认滚动行为
+      event.preventDefault()
+
+      // 设置一个最小滚动阈值，避免轻微滚动就触发翻页
+      const THRESHOLD = 40 // 需要明显滚动才触发
+      if (Math.abs(event.deltaY) < THRESHOLD) {
+        return
+      }
+
+      // 使用节流，避免滚动过快
+      if (scrollTimeoutRef.current) {
+        return
+      }
+
+      scrollTimeoutRef.current = setTimeout(() => {
+        scrollTimeoutRef.current = null
+      }, 900) // 900ms 内只响应一次滚动
+
+      if (event.deltaY > 0) {
+        // 向下滚动：下一个幻灯片
+        navigateSlide('down')
+      } else if (event.deltaY < 0) {
+        // 向上滚动：上一个幻灯片
+        navigateSlide('up')
+      }
+    }
+
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('wheel', handleWheel, { passive: false })
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('wheel', handleWheel)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
   }, [currentSlide, navigate])
 
   const nextSlide = () => {
@@ -52,7 +100,7 @@ function Last() {
   }
 
   return (
-    <div className="last-slideshow-container">
+    <div className="page-transition last-slideshow-container">
       {images.map((imageSrc, index) => (
         <div
           key={index}

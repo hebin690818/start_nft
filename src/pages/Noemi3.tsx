@@ -12,7 +12,7 @@ function Noemi3() {
   useNoemiNavigation()
   
   return (
-    <div className="noemi3-wrapper">
+    <div className="page-transition noemi3-wrapper">
       <div className="content">
         <header className="header">
           <div className="enter-btn">works</div>
