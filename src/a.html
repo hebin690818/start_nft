@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas 炫酷老虎机</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: radial-gradient(circle at top, #0f172a, #020617 70%, #000 100%);
+      color: #e5e7eb;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: 20px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #e0f2fe;
+      text-shadow:
+        0 0 8px rgba(56, 189, 248, 0.8),
+        0 0 20px rgba(37, 99, 235, 0.8);
+    }
+
+    .card {
+      padding: 18px 22px 18px;
+      border-radius: 20px;
+      background: radial-gradient(circle at top, #020617, #020617 55%, #020617 100%);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow:
+        0 0 40px rgba(37, 99, 235, 0.4),
+        0 20px 55px rgba(0, 0, 0, 0.8);
+      text-align: center;
+    }
+
+    canvas {
+      display: block;
+      margin-bottom: 12px;
+      border-radius: 16px;
+    }
+
+    button {
+      margin-top: 4px;
+      padding: 8px 28px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      color: #020617;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      box-shadow:
+        0 0 20px rgba(56, 189, 248, 0.7),
+        0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    #result2 {
+      margin-top: 8px;
+      min-height: 22px;
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+
+    #result2 span.symbol {
+      font-size: 22px;
+      margin: 0 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>CANVAS SLOT</h1>
+
+  <div class="card">
+    <canvas id="slotCanvas" width="260" height="80"></canvas>
+    <button id="spinBtn2">SPIN</button>
+    <div id="result2"></div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("slotCanvas");
+    const ctx = canvas.getContext("2d");
+    const spinBtn2 = document.getElementById("spinBtn2");
+    const result2 = document.getElementById("result2");
+
+    // 这里你可以自由替换成自己的图标
+    const symbols = ["🍒", "🍋", "🔔", "⭐", "7️⃣", "💎", "BAR"];
+    const ITEM_HEIGHT = 80;
+    const SYMBOL_COUNT = symbols.length;
+    const CYCLE_HEIGHT = ITEM_HEIGHT * SYMBOL_COUNT;
+
+    // 当前滚动距离
+    let position = 0;
+    let spinning = false;
+
+    // 动画相关
+    let startPos = 0;
+    let endPos = 0;
+    let startTime = 0;
+    let duration = 0;
+    let targetIndex = 0;
+
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function draw() {
+      // 背景
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      bgGrad.addColorStop(0, "#020617");
+      bgGrad.addColorStop(1, "#0f172a");
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 外框（霓虹）
+      ctx.save();
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 3;
+      ctx.shadowColor = "rgba(56,189,248,0.9)";
+      ctx.shadowBlur = 16;
+      ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
+      ctx.restore();
+
+      // 中间高亮区域（让中心格更亮一点）
+      const centerGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      centerGrad.addColorStop(0, "rgba(15,23,42,0.9)");
+      centerGrad.addColorStop(0.5, "rgba(30,64,175,0.7)");
+      centerGrad.addColorStop(1, "rgba(15,23,42,0.9)");
+      ctx.fillStyle = centerGrad;
+      ctx.fillRect(6, 6, canvas.width - 12, canvas.height - 12);
+
+      const offset = position % CYCLE_HEIGHT;
+
+      // 绘制重复的图标，让视觉上形成无限滚动
+      for (let i = 0; i < SYMBOL_COUNT + 1; i++) {
+        const symbolIndex = i % SYMBOL_COUNT;
+        const y = i * ITEM_HEIGHT - offset;
+        if (y > canvas.height || y + ITEM_HEIGHT < 0) continue;
+
+        const isCenter =
+          y + ITEM_HEIGHT / 2 > canvas.height * 0.2 &&
+          y + ITEM_HEIGHT / 2 < canvas.height * 0.8;
+
+        ctx.save();
+        ctx.font = isCenter ? "46px system-ui" : "40px system-ui";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = isCenter ? "#facc15" : "#e5e7eb";
+        ctx.shadowColor = isCenter
+          ? "rgba(250,204,21,0.9)"
+          : "rgba(148,163,184,0.7)";
+        ctx.shadowBlur = isCenter ? 18 : 8;
+
+        ctx.fillText(
+          symbols[symbolIndex],
+          canvas.width / 2,
+          y + ITEM_HEIGHT / 2
+        );
+        ctx.restore();
+      }
+
+      // 中心指示线
+      ctx.save();
+      ctx.strokeStyle = "rgba(248,250,252,0.35)";
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(12, canvas.height / 2);
+      ctx.lineTo(canvas.width - 12, canvas.height / 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function animate(timestamp) {
+      if (!spinning) {
+        draw();
+        return;
+      }
+
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      let t = elapsed / duration;
+      if (t > 1) t = 1;
+
+      const e = easeOutCubic(t);
+      position = startPos + (endPos - startPos) * e;
+
+      draw();
+
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        spinning = false;
+        position = endPos;
+        startTime = 0;
+        draw();
+
+        // 最终就是 targetIndex
+        const finalSymbol = symbols[targetIndex];
+        result2.innerHTML = `结果：<span class="symbol">${finalSymbol}</span>`;
+        spinBtn2.disabled = false;
+      }
+    }
+
+    // 开始滚动
+    function startSpin() {
+      if (spinning) return;
+      spinning = true;
+      spinBtn2.disabled = true;
+      result2.textContent = "转动中...";
+
+      startPos = position;
+
+      // 随机目标图标
+      targetIndex = Math.floor(Math.random() * SYMBOL_COUNT);
+
+      // 多转几圈再停
+      const currentCycles = Math.floor(startPos / CYCLE_HEIGHT);
+      const extraCycles = 6 + Math.floor(Math.random() * 3); // 6~8 圈
+      const baseCycles = currentCycles + extraCycles;
+      endPos = baseCycles * CYCLE_HEIGHT + targetIndex * ITEM_HEIGHT;
+
+      duration = 2200 + Math.random() * 600; // 2.2~2.8s
+      startTime = 0;
+
+      requestAnimationFrame(animate);
+    }
+
+    spinBtn2.addEventListener("click", startSpin);
+
+    // 初次绘制
+    draw();
+  </script>
+</body>
+</html>

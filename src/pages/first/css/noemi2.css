@@ -1,0 +1,213 @@
+.noemi2-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 26px 0 0 100px;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    .content {
+        min-height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
+        .header {
+            min-height: 60px;
+            margin-right: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+
+            .enter-btn {
+                margin-right: 40px;
+                padding: 0 60px;
+                color: rgba(255, 255, 255, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                border-radius: 20px;
+                line-height: 42px;
+                font-size: 24px;
+                cursor: pointer;
+                font-weight: 300;
+            }
+
+            img {
+                height: 42px;
+            }
+        }
+
+        section {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            min-height: 0;
+
+            .left {
+                width: 55%;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 20px 0;
+
+                .title {
+                    font-size: 64px;
+
+                    div {
+                        display: flex;
+                        font-weight: bold;
+
+                        .blue {
+                            color: #14BCFF;
+                        }
+                    }
+                }
+
+                .info {
+                    justify-content: flex-start;
+                    display: flex;
+                    flex-direction: column;
+                    font-size: 24px;
+                    margin: 30px 0;
+
+                    > div {
+                        margin-bottom: 20px;
+                        display: flex;
+                        align-items: center;
+
+                        div {
+                            min-width: 40%;
+
+                            .label {
+                                color: rgba(255, 255, 255, 0.6);
+                            }
+                        }
+                    }
+                }
+
+                .icons {
+                    display: flex;
+                    flex-direction: column;
+                    opacity: 0.8;
+                    margin: 30px 0;
+
+                    display: inline-block;
+                    /* WebKit 要求的前缀写法 —— 注意这里用 rgba(...) 表示 alpha */
+                    -webkit-mask-image: -webkit-linear-gradient(to left,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 0, 0, 1) 40%,
+                    rgba(0, 0, 0, 1) 60%,
+                    rgba(0, 0, 0, 0) 100%
+                    );
+                    -webkit-mask-size: 100% 100%;
+                    -webkit-mask-repeat: no-repeat;
+
+                    /* 标准写法 */
+                    mask-image: linear-gradient(to right,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 0, 0, 1) 20%,
+                    rgba(0, 0, 0, 1) 80%,
+                    rgba(0, 0, 0, 0) 100%
+                    );
+                    mask-size: 100% 100%;
+                    mask-repeat: no-repeat;
+                    img {
+                        margin: 0 20px 20px 0;
+                        height: 80px;
+                    }
+                }
+
+                .year {
+                    padding: 20px 0 100px 0;
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #14BCFF;
+                }
+            }
+
+            .right {
+                align-self: flex-start;
+                width: 40%;
+                position: sticky;
+                top: 26px;
+                max-height: calc(100vh - 52px);
+
+                img {
+                    width: 100%;
+                    height: auto;
+                    object-fit: contain;
+                }
+                /*width: 50%;*/
+                /*height: 90vh;*/
+                /*align-self: flex-end;*/
+                /*background: url("../img/user.png") no-repeat bottom right;*/
+                /*background-size: contain;*/
+                /*box-sizing: border-box;*/
+                /*position: relative;*/
+
+                .name {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2.5rem;
+                    font-weight: bold;
+
+                    img {
+                        height: 20px;
+                    }
+                }
+
+                .address {
+                    font-size: 1.3rem;
+                    color: #AFDCED;
+                    margin-bottom: 20px;
+                }
+
+                .description {
+                    font-size: 1.3rem;
+                }
+
+                .email {
+                    margin: 20px 40px;
+                }
+
+                .number {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    > div {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        font-size: 1.3rem;
+                        margin: 0 20px;
+
+                        .num {
+                            color: #CBEAF9;
+                            font-size: 2rem;
+                        }
+                    }
+                }
+
+                .color {
+                    color: #AFDCED;
+                }
+            }
+        }
+    }
+}
+/* 
+@media screen and (max-width: 1920px) {
+   .wrapper .content section .right {
+       height: 90%;
+       padding: 270px 30px 0 0;
+   }
+}
+
+@media screen and (max-width: 2560px) {
+   .wrapper .content section .right {
+       height: 90vh;
+       padding: 40vh 30px 0 0;
+   }
+} */
